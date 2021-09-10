@@ -3,5 +3,12 @@
 version = 3
 
 [[package]]
+name = "cli"
+version = "0.1.0"
+dependencies = [
+ "my_library",
+]
+
+[[package]]
 name = "my_library"
 version = "0.1.0"
