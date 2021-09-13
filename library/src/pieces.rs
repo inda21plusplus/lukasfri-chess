@@ -1,16 +1,16 @@
 use crate::structs::{Board, Color, Coordinate, Direction};
-mod PawnPiece;
-pub use PawnPiece::Pawn;
-mod KingPiece;
-pub use KingPiece::King;
-mod QueenPiece;
-pub use QueenPiece::Queen;
-mod KnightPiece;
-pub use KnightPiece::Knight;
-mod BishopPiece;
-pub use BishopPiece::Bishop;
-mod RookPiece;
-pub use RookPiece::Rook;
+mod pawn;
+pub use pawn::Pawn;
+mod king;
+pub use king::King;
+mod queen;
+pub use queen::Queen;
+mod knight;
+pub use knight::Knight;
+mod bishop;
+pub use bishop::Bishop;
+mod rook;
+pub use rook::Rook;
 // LÄRT MIG DETTA/LÅNAT FRÅN https://stackoverflow.com/questions/30353462/how-to-clone-a-struct-storing-a-boxed-trait-object
 pub trait PieceClone {
     fn clone_box(&self) -> Box<dyn Piece>;
