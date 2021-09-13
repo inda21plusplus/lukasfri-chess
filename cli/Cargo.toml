@@ -7,3 +7,4 @@ edition = "2018"
 
 [dependencies]
 my_library = { path = "../library" }
+colored = "2.0.0"
