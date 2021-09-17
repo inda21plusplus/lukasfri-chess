@@ -19,30 +19,47 @@ pub enum Color {
 }
 
 #[derive(Debug, Clone)]
-pub struct Square(pub bool, pub Option<Box<dyn Piece>>);
+pub struct Square(pub Option<Option<Box<dyn Piece>>>);
 impl Square {
     pub fn new_with_piece<T: Piece + 'static>(piece: T) -> Square {
-        return Square(true, Some(Box::new(piece)));
+        return Square(Some(Some(Box::new(piece))));
     }
 
     pub fn from_box(piece_box: Box<dyn Piece>) -> Square {
-        return Square(true, Some(piece_box));
+        return Square(Some(Some(piece_box)));
     }
 
     pub fn new_empty() -> Square {
-        return Square(true, None);
+        return Square(Some(None));
     }
 
     pub fn new_blocked() -> Square {
-        return Square(false, None);
+        return Square(None);
+    }
+
+    pub fn is_empty(&self) -> bool {
+        if self.is_blocked() { return true; };
+        return self.0.as_ref().unwrap().is_none();
+    }
+
+    pub fn is_blocked(&self) -> bool {
+        self.0.is_none()
+    }
+
+    pub fn is_piece(&self) -> bool {
+        return !self.is_empty();
+    }
+
+    pub fn unwrap(&self) -> &dyn Piece {
+        self.0.as_ref().unwrap().as_ref().unwrap().as_ref()
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct Board(pub Vec<Vec<Square>>);
+pub struct Board(pub Vec<Square>, usize, usize);
 impl Board {
     pub fn new_board(width: usize, height: usize) -> Board {
-        return Board(vec![vec![Square::new_empty(); height]; width]);
+        return Board(vec![Square::new_empty(); width * height], width, height);
     }
 
     pub fn fill<T: Piece + 'static>(&mut self, from: Coordinate, to: Coordinate, piece: T) {
@@ -54,12 +71,12 @@ impl Board {
     }
 
     pub fn set_piece_box(&mut self, at: Coordinate, piece_box: Box<dyn Piece>) -> bool {
-        self.0[at.0][at.1] = Square::from_box(piece_box);
+        self.0[at.0 + at.1 * self.1] = Square::from_box(piece_box);
         return true;
     }
 
     pub fn set_piece<T: Piece + 'static>(&mut self, at: Coordinate, piece: T) -> bool {
-        self.0[at.0][at.1] = Square::new_with_piece(piece);
+        self.set_piece_box(at, Box::from(piece));
         return true;
     }
 }
