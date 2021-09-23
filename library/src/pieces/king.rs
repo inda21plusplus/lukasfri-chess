@@ -1,4 +1,5 @@
 use crate::{structs::{Board, Color, Coordinate}, pieces::Piece};
+use std::convert::TryFrom;
 
 #[derive(Debug, Clone)]
 pub struct King {
@@ -14,9 +15,11 @@ impl King {
     }
 }
 impl Piece for King {
-    #[inline(never)]
     fn can_move(&self, board: &Board, from: &Coordinate, to: &Coordinate) -> bool {
-        println!("King can move!");
+        let diff_x = i128::try_from(from.x).unwrap() - i128::try_from(to.x).unwrap();
+        let diff_y = i128::try_from(from.y).unwrap() - i128::try_from(to.y).unwrap();
+        if diff_x.abs() > 1 || diff_y.abs() > 1 { return false; };
+
         return true;
     }
 
