@@ -32,7 +32,7 @@ impl Clone for Box<dyn Piece> {
 }
 
 pub trait Piece: std::fmt::Debug + PieceClone {
-    fn can_move(&self, board: &Board, from: &Coordinate, to: &Coordinate) -> bool;
+    fn can_move(&mut self, board: &Board, from: &Coordinate, to: &Coordinate) -> bool;
     fn get_color(&self) -> Color;
     fn get_char(&self) -> &str;
 }

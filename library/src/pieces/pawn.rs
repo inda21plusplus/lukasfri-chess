@@ -23,9 +23,7 @@ impl Pawn {
     }
 }
 impl Piece for Pawn {
-    #[inline(never)]
-    fn can_move(&self, board: &Board, from: &Coordinate, to: &Coordinate) -> bool {
-        println!("Pawn can move!");
+    fn can_move(&mut self, board: &Board, from: &Coordinate, to: &Coordinate) -> bool {
         return true;
     }
 
