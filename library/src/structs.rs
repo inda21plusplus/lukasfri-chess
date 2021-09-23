@@ -1,3 +1,5 @@
+use std::{convert::TryInto, ops::{Add, Sub}};
+
 use crate::pieces::Piece;
 
 #[derive(Debug, Clone, Copy)]
@@ -56,30 +58,58 @@ impl Square {
 }
 
 #[derive(Debug, Clone)]
-pub struct Board(pub Vec<Square>, usize, usize);
+pub struct Board {
+    pub pieces: Vec<Square>,
+    pub width: usize,
+    pub height: usize,
+    blocked: Square,
+}
 impl Board {
     pub fn new_board(width: usize, height: usize) -> Board {
-        return Board(vec![Square::new_empty(); width * height], width, height);
+        return Board{
+            pieces: vec![Square::new_empty(); width * height],
+            width,
+            height,
+            blocked: Square::new_blocked()
+        };
     }
 
-    pub fn fill<T: Piece + 'static>(&mut self, from: Coordinate, to: Coordinate, piece: T) {
-        for x in (from.0)..=(to.0) {
-            for y in (from.1)..=(to.1) {
-                self.set_piece_box(Coordinate(x, y), piece.clone_box());
+    pub fn fill<T: Piece + 'static>(&mut self, from: &Coordinate, to: &Coordinate, piece: T) {
+        for x in (from.x)..=(to.x) {
+            for y in (from.y)..=(to.y) {
+                self.set_piece_box(&Coordinate{x, y}, piece.clone_box());
             }
         }
     }
 
-    pub fn set_piece_box(&mut self, at: Coordinate, piece_box: Box<dyn Piece>) -> bool {
-        self.0[at.0 + at.1 * self.1] = Square::from_box(piece_box);
+    pub fn set_piece_square(&mut self, at: &Coordinate, piece_box: Square) -> bool {
+        if at.x < 0 || at.y < 0 { false;}
+        self.pieces[at.x + at.y * self.width] = piece_box;
         return true;
     }
 
-    pub fn set_piece<T: Piece + 'static>(&mut self, at: Coordinate, piece: T) -> bool {
+    pub fn set_piece_box(&mut self, at: &Coordinate, piece_box: Box<dyn Piece>) -> bool {
+        if at.x < 0 || at.y < 0 { false;}
+        self.pieces[at.x + at.y * self.width] = Square::from_box(piece_box);
+        return true;
+    }
+
+    pub fn set_piece<T: Piece + 'static>(&mut self, at: &Coordinate, piece: T) -> bool {
         self.set_piece_box(at, Box::from(piece));
         return true;
+    }
+
+    pub fn get_piece(&self, at: &Coordinate) -> &Square {
+        if (at.x < self.width && at.y < self.height) == false {
+            return &self.blocked;
+        }
+
+        return &self.pieces[at.x + at.y * self.width];
     }
 }
 
 #[derive(Debug, Clone)]
-pub struct Coordinate(pub usize, pub usize);
+pub struct Coordinate {
+    pub x: usize,
+    pub y: usize
+}
