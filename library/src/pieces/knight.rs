@@ -11,11 +11,12 @@ impl Knight {
     }
 }
 impl Piece for Knight {
-    fn can_move(&mut self, board: &Board, from: &Coordinate, to: &Coordinate) -> bool {
+    fn move_piece(&mut self, board: &mut Board, from: &Coordinate, to: &Coordinate) -> bool {
         let diff_x = i128::try_from(from.x).unwrap() - i128::try_from(to.x).unwrap();
         let diff_y = i128::try_from(from.y).unwrap() - i128::try_from(to.y).unwrap();
         if !(diff_x.abs() == 1 && diff_y.abs() == 2 || diff_x.abs() == 2 && diff_y.abs() == 1) { return false; };
 
+        board.execute_move_piece(from, to);
         return true;
     }
 

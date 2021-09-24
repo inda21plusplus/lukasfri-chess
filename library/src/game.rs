@@ -25,17 +25,10 @@ impl Game {
     }
 
     pub fn move_piece(&mut self, from: &Coordinate, to: &Coordinate) -> bool {
-        let square = self.board.get_piece(from);
+        let mut square = self.board.get_piece(from).clone();
         if from.x == to.x && from.y == to.y { return false; };
-        if !square.is_piece() || !square.unwrap().can_move(&self.board, from, to) { return false; };
-        self.execute_move(from, to);
-        return true;
-    }
-
-    fn execute_move(&mut self, from: &Coordinate, to: &Coordinate) {
-        let square = self.board.get_piece(from).clone();
-
-        self.board.set_piece_square(to, square);
-        self.board.set_piece_square(from, Square::new_empty());
+        if !square.is_piece() { return false; };
+        let piece = square.unwrap_mut();
+        return piece.move_piece(&mut self.board, from, to);
     }
 }
