@@ -32,6 +32,7 @@ impl Piece for Pawn {
         
         let mut x_allowed: i128 = 0;
         let mut y_allowed: i128 = 0;
+        
         match self.direction {
             Direction::North => {
                 x_allowed = 0;
@@ -55,8 +56,15 @@ impl Piece for Pawn {
             if diff_x == 2 {
                 if diff_y != 0 {return false;};
                 if self.has_moved {return false;};
-                let square = board.trace_line_of_sight(from, to);
-                if !square.is_empty() {return false;};
+                let line_of_sight = board.trace_line_of_sight(from, to);
+                if line_of_sight.is_none() { return false; };
+                let line_of_sight_square = line_of_sight.unwrap();
+                if !line_of_sight_square.is_empty() {return false;};
+
+                let maybe_pawn_piece = line_of_sight_square.unwrap();
+                let maybe_pawn = maybe_pawn_piece.downcast_ref::<Pawn>();
+                if maybe_pawn.is_none() { return false; };
+                let pawn = maybe_pawn.unwrap();
             }
             else if diff_y.abs() == 1 {
                 let square = board.get_piece(to);

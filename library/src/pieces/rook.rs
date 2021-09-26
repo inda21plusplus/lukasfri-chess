@@ -21,7 +21,9 @@ impl Piece for Rook {
         if diff_x.abs() == 0 || diff_y.abs() == 0 { return false; };
         
         let line_of_sight = board.trace_line_of_sight(from, to);
-        if line_of_sight.is_piece() && line_of_sight.unwrap().get_color() == self.get_color() { return false; };
+        if line_of_sight.is_none() { return false; };
+        let line_of_sight_square = line_of_sight.unwrap();
+        if line_of_sight_square.is_piece() && line_of_sight_square.unwrap().get_color() == self.get_color() { return false; };
 
         self.has_moved = true;
         

@@ -51,10 +51,13 @@ fn print_board(game: &Game) {
 }
 
 fn main() {
-    let mut game: Game = Game::new();
-    print_board(&game);
-    game.move_piece(&Coordinate{x: 0, y: 0}, &Coordinate{x: 0, y: 5});
-    print_board(&game);
-    game.move_piece(&Coordinate{x: 0, y: 0}, &Coordinate{x: 0, y: 1});
+    let mut game: Game = Game::new_default();
+    game.move_piece(&Coordinate{x: 4, y: 1}, &Coordinate{x: 4, y: 2});
+    game.move_piece(&Coordinate{x: 0, y: 6}, &Coordinate{x: 0, y: 5});
+    game.move_piece(&Coordinate{x: 5, y: 0}, &Coordinate{x: 4, y: 1});
+    game.move_piece(&Coordinate{x: 1, y: 6}, &Coordinate{x: 1, y: 5});
+    game.move_piece(&Coordinate{x: 6, y: 0}, &Coordinate{x: 7, y: 2});
+    game.move_piece(&Coordinate{x: 2, y: 6}, &Coordinate{x: 2, y: 5});
+    game.move_piece(&Coordinate{x: 4, y: 0}, &Coordinate{x: 6, y: 0});
     print_board(&game);
 }

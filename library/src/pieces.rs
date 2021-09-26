@@ -1,5 +1,6 @@
 use crate::structs::{Board, Color, Coordinate, Direction};
 mod pawn;
+use downcast_rs::{Downcast, impl_downcast};
 pub use pawn::Pawn;
 mod king;
 pub use king::King;
@@ -31,11 +32,12 @@ impl Clone for Box<dyn Piece> {
     }
 }
 
-pub trait Piece: std::fmt::Debug + PieceClone {
+pub trait Piece: std::fmt::Debug + PieceClone + Downcast {
     fn move_piece(&mut self, board: &mut Board, from: &Coordinate, to: &Coordinate) -> bool;
     fn get_color(&self) -> Color;
     fn get_char(&self) -> &str;
 }
+impl_downcast!(Piece);
 
 impl dyn Piece {
     fn get_char(&self) -> &str {

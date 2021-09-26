@@ -119,24 +119,52 @@ impl Board {
         return self.pieces[at.x + at.y * self.width].borrow_mut();
     }
 
-    pub fn trace_line_of_sight(&self, from: &Coordinate, to: &Coordinate) -> &Square {
-        let diff_x = i128::try_from(from.x).unwrap() - i128::try_from(to.x).unwrap();
-        let diff_y = i128::try_from(from.y).unwrap() - i128::try_from(to.y).unwrap();
-        if diff_x != 0 && diff_y != 0 && diff_x != diff_y { panic!("HUH"); };
+    pub fn trace_line_of_sight(&self, from: &Coordinate, to: &Coordinate) -> Option<&Square> {
+        let diff_x = i128::try_from(to.x).unwrap() - i128::try_from(from.x).unwrap();
+        let diff_y = i128::try_from(to.y).unwrap() - i128::try_from(from.y).unwrap();
+        if diff_x != 0 && diff_y != 0 && diff_x.abs() != diff_y.abs() { panic!("Not a straight or diagonal line."); };
 
         let mut checked_square: &Square = &self.blocked;
 
         for i in 1..=(diff_x.abs().max(diff_y.abs())) {
-            let x = i128::try_from(from.x).unwrap() + if diff_x == 0 {0} else  {diff_x/diff_x.abs()*i};
-            let y = i128::try_from(from.y).unwrap() + if diff_y == 0 {0} else  {diff_y/diff_y.abs()*i};
-            if x < 0 || y < 0 { return &self.blocked };
+            let x = i128::try_from(from.x).unwrap() + if diff_x == 0 {0} else {diff_x/diff_x.abs()*i};
+            let y = i128::try_from(from.y).unwrap() + if diff_y == 0 {0} else {diff_y/diff_y.abs()*i};
+            if x < 0 || y < 0 {
+                return None;
+            };
 
-            checked_square = self.get_piece(&Coordinate{x: x.try_into().unwrap(), y: y.try_into().unwrap()});
+            let coord = Coordinate{x: x.try_into().unwrap(), y: y.try_into().unwrap()};
+            checked_square = self.get_piece(&coord);
 
-            if checked_square.is_blocked() || checked_square.is_piece() { break; };
+            if checked_square.is_blocked() { return None; }
+            else if checked_square.is_piece() { break; };
         };
 
-        return checked_square;
+        return Some(checked_square);
+    }
+
+    pub fn trace_line_of_sight_mut (&mut self, from: &Coordinate, to: &Coordinate) -> Option<&mut Square> {
+        let diff_x = i128::try_from(to.x).unwrap() - i128::try_from(from.x).unwrap();
+        let diff_y = i128::try_from(to.y).unwrap() - i128::try_from(from.y).unwrap();
+        if diff_x != 0 && diff_y != 0 && diff_x.abs() != diff_y.abs() { panic!("Not a straight or diagonal line."); };
+
+        let mut coord: Coordinate = from.clone();
+
+        for i in 1..=(diff_x.abs().max(diff_y.abs())) {
+            let x = i128::try_from(from.x).unwrap() + if diff_x == 0 {0} else  {diff_x/diff_x.abs()*i};
+            let y = i128::try_from(from.y).unwrap() + if diff_y == 0 {0} else  {diff_y/diff_y.abs()*i};
+            if x < 0 || y < 0 {
+                return None;
+            };
+
+            coord = Coordinate{x: x.try_into().unwrap(), y: y.try_into().unwrap()};
+            let checked_square = self.get_piece(&coord);
+
+            if checked_square.is_blocked() { return None; }
+            else if checked_square.is_piece() { break; };
+        };
+
+        return Some(self.get_piece_mut(&coord));
     }
 
     pub fn execute_move_piece(&mut self, from: &Coordinate, to: &Coordinate) {

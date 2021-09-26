@@ -29,14 +29,16 @@ impl Piece for King {
             else if y > 0 {y = usize::MAX };
 
 
-            let mut square = board.trace_line_of_sight(from, &Coordinate{x, y});
-            if !square.is_piece() { return false; };
+            let line_of_sight = board.trace_line_of_sight_mut(from, &Coordinate{x, y});
+            if line_of_sight.is_none() { return false; };
+            let line_of_sight_square = line_of_sight.unwrap();
+            if !line_of_sight_square.is_piece() { return false; };
 
-            return false;
-            // let maybe_rook = square.unwrap_mut();
-            // if maybe_rook.get_char() == "♜" {
-            //     let rook = maybe_rook.any;
-            // };
+            let maybe_rook_piece = line_of_sight_square.unwrap_mut();
+            let maybe_rook = maybe_rook_piece.downcast_mut::<Rook>();
+            if maybe_rook.is_none() { return false; };
+            let rook = maybe_rook.unwrap();
+
         };
         if diff_x.abs() > 1 || diff_y.abs() > 1 { return false; };
 
