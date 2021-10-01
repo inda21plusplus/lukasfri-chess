@@ -1,3 +1,5 @@
+mod properties;
+mod square_ui;
 mod state;
 
 use std::{env, path};
@@ -6,7 +8,7 @@ use crate::state::State;
 use ggez::conf::*;
 use ggez::*;
 
-pub(crate) const WINDOW_WIDTH: f32 = 1400.0;
+pub(crate) const WINDOW_WIDTH: f32 = 960.0;
 pub(crate) const WINDOW_HEIGHT: f32 = 960.0;
 
 pub fn main() {
@@ -19,7 +21,11 @@ pub fn main() {
     };
 
     let (mut ctx, event_loop) = ContextBuilder::new("chess", "Olle Strand")
-        .window_setup(WindowSetup::default().title("Olle Schack").vsync(true))
+        .window_setup(
+            WindowSetup::default()
+                .title("Schack, men en tvist, eller två, eller tre, eller fyra, eller fler")
+                .vsync(true),
+        )
         .window_mode(
             WindowMode::default()
                 .dimensions(WINDOW_WIDTH, WINDOW_HEIGHT)

@@ -8,4 +8,5 @@ edition = "2018"
 [dependencies]
 my_library = { path = "../library"}
 ggez = "0.6.1"
-glam = "0.18.0"
+glam = {version= "0.18.0", features=["mint"] }
+arr_macro = "0.1.3"
